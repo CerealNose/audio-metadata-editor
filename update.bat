@@ -16,7 +16,9 @@ echo ========================================
 echo Updating dependencies...
 echo ========================================
 echo.
-call npm install
+echo Note: Using --legacy-peer-deps to resolve dependency conflicts
+echo.
+call npm install --legacy-peer-deps
 if errorlevel 1 (
     echo.
     echo ERROR: Failed to update dependencies

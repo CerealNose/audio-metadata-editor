@@ -200,7 +200,7 @@ Double-click `install.bat` to:
 install.bat
 ```
 
-**Note:** The scripts use npm (which comes with Node.js) for maximum compatibility. No additional package manager installation is required.
+**Note:** The scripts use npm (which comes with Node.js) for maximum compatibility. No additional package manager installation is required. The `--legacy-peer-deps` flag is used to resolve dependency version conflicts, which is a standard practice in modern Node.js projects.
 
 #### 2. Start Development Server
 
