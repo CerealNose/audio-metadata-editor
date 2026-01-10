@@ -80,20 +80,25 @@ if not exist .env.local (
     echo .env.local already exists
 )
 
-REM Setup database
+REM Database setup instructions
 echo.
 echo ========================================
-echo Setting up database...
+echo Database Configuration
 echo ========================================
 echo.
-echo Running database migrations...
-call npm run db:push
-if errorlevel 1 (
-    echo.
-    echo WARNING: Database setup may have failed
-    echo Make sure MySQL is running and DATABASE_URL is correct in .env.local
-    echo.
-)
+echo IMPORTANT: Before running the app, you need to set up MySQL:
+echo.
+echo 1. Install MySQL from: https://www.mysql.com/downloads/
+echo 2. Start the MySQL service
+echo 3. Create the database by running these commands:
+echo.
+echo    mysql -u root -p
+echo    CREATE DATABASE audio_metadata_editor;
+echo    EXIT;
+echo.
+echo 4. Edit .env.local and update DATABASE_URL with your MySQL credentials
+echo 5. Run: update.bat (to initialize the database schema)
+echo.
 
 REM Success message
 echo.
@@ -102,8 +107,9 @@ echo Setup Complete!
 echo ========================================
 echo.
 echo Next steps:
-echo 1. Edit .env.local with your configuration
-echo 2. Make sure MySQL is running
-echo 3. Run: run.bat (to start the development server)
+echo 1. Install and configure MySQL
+echo 2. Edit .env.local with your database credentials
+echo 3. Run: update.bat (to initialize the database)
+echo 4. Run: run.bat (to start the development server)
 echo.
 pause

@@ -186,21 +186,40 @@ Before you begin, ensure you have the following installed on your PC:
 
 ### Windows Users - Quick Start
 
-For Windows users, we've provided convenient batch scripts to automate the setup and running process:
+For Windows users, we've provided convenient batch scripts to automate the setup and running process.
+
+#### Prerequisites - Install MySQL First
+
+Before running install.bat, you need to install MySQL:
+
+1. Download MySQL from: https://www.mysql.com/downloads/
+2. Run the installer and follow the setup wizard
+3. Remember your root password
+4. Start the MySQL service
 
 #### 1. First Time Setup
 
 Double-click `install.bat` to:
-- Check for Node.js and pnpm
+- Check for Node.js
 - Install all dependencies
 - Create `.env.local` with default values
-- Set up the database
+- Display MySQL setup instructions
 
 ```cmd
 install.bat
 ```
 
-**Note:** The scripts use npm (which comes with Node.js) for maximum compatibility. No additional package manager installation is required. The `--legacy-peer-deps` flag is used to resolve dependency version conflicts, which is a standard practice in modern Node.js projects.
+After running install.bat:
+1. Create the database using MySQL:
+   ```bash
+   mysql -u root -p
+   CREATE DATABASE audio_metadata_editor;
+   EXIT;
+   ```
+2. Edit `.env.local` and update `DATABASE_URL` with your MySQL credentials
+3. Run `update.bat` to initialize the database schema
+
+**Note:** The scripts use npm (which comes with Node.js) for maximum compatibility. The `--legacy-peer-deps` flag resolves dependency version conflicts.
 
 #### 2. Start Development Server
 
