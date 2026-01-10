@@ -107,9 +107,14 @@ echo Setup Complete!
 echo ========================================
 echo.
 echo Next steps:
-echo 1. Install and configure MySQL
-echo 2. Edit .env.local with your database credentials
-echo 3. Run: update.bat (to initialize the database)
-echo 4. Run: run.bat (to start the development server)
+echo 1. Run: setup.bat (automated MySQL and .env configuration)
+echo 2. Run: update.bat (to initialize the database)
+echo 3. Run: run.bat (to start the development server)
+echo.
+echo OR manually:
+echo 1. Install MySQL from https://www.mysql.com/downloads/
+echo 2. Run: setup.bat (to configure .env and create database)
+echo 3. Run: update.bat
+echo 4. Run: run.bat
 echo.
 pause
