@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Upload, Music, Edit3, Download } from "lucide-react";
 import { getLoginUrl } from "@/const";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import AudioFilesList from "@/components/AudioFilesList";
@@ -12,15 +12,23 @@ import AudioEditor from "@/components/AudioEditor";
 import BatchEditor from "@/components/BatchEditor";
 
 export default function Home() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
   const [selectedBatchIds, setSelectedBatchIds] = useState<number[]>([]);
+  const [devMode, setDevMode] = useState(false);
+
+  // Check if we're in development mode
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      setDevMode(true);
+    }
+  }, []);
 
   const { data: audioFiles, isLoading, refetch } = trpc.audio.list.useQuery(
     undefined,
-    { enabled: isAuthenticated }
+    { enabled: isAuthenticated || devMode }
   );
 
   const handleUploadSuccess = () => {
@@ -47,7 +55,20 @@ export default function Home() {
     }
   };
 
-  if (!isAuthenticated) {
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // In development mode, skip authentication check
+  if (!isAuthenticated && !devMode) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center px-4">
         <div className="max-w-2xl w-full text-center">
@@ -139,7 +160,7 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold">Audio Metadata Editor</h1>
           </div>
           <p className="text-muted-foreground">
-            Welcome back, {user?.name}. Manage your audio file metadata with ease.
+            Welcome{user?.name ? `, ${user.name}` : ''}. Manage your audio file metadata with ease.
           </p>
         </div>
 
