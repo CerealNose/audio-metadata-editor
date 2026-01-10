@@ -9,11 +9,14 @@ import { toast } from "sonner";
 import AudioFilesList from "@/components/AudioFilesList";
 import AudioUploadZone from "@/components/AudioUploadZone";
 import AudioEditor from "@/components/AudioEditor";
+import BatchEditor from "@/components/BatchEditor";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
   const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  const [batchMode, setBatchMode] = useState(false);
+  const [selectedBatchIds, setSelectedBatchIds] = useState<number[]>([]);
 
   const { data: audioFiles, isLoading, refetch } = trpc.audio.list.useQuery(
     undefined,
@@ -96,6 +99,24 @@ export default function Home() {
     );
   }
 
+  if (batchMode && selectedBatchIds.length > 0) {
+    return (
+      <BatchEditor
+        fileIds={selectedBatchIds}
+        onClose={() => {
+          setBatchMode(false);
+          setSelectedBatchIds([]);
+        }}
+        onComplete={() => {
+          setBatchMode(false);
+          setSelectedBatchIds([]);
+          refetch();
+          toast.success("Batch update completed successfully");
+        }}
+      />
+    );
+  }
+
   if (selectedFileId) {
     return (
       <AudioEditor
@@ -149,6 +170,20 @@ export default function Home() {
 
           {/* Files List Section */}
           <div className="lg:col-span-2">
+            {audioFiles && audioFiles.length > 0 && (
+              <div className="mb-4 flex gap-2">
+                <Button
+                  onClick={() => {
+                    setBatchMode(true);
+                    setSelectedBatchIds((audioFiles as any[]).map((f: any) => f.id));
+                  }}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  Edit All Files
+                </Button>
+              </div>
+            )}
             <AudioFilesList
               files={audioFiles || []}
               isLoading={isLoading}
