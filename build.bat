@@ -26,14 +26,6 @@ if not exist .env.local (
     exit /b 1
 )
 
-REM Determine package manager
-pnpm --version >nul 2>&1
-if errorlevel 1 (
-    set "PKG_MANAGER=npm"
-) else (
-    set "PKG_MANAGER=pnpm"
-)
-
 REM Clean previous builds
 echo.
 echo ========================================
@@ -51,7 +43,7 @@ echo ========================================
 echo Running tests...
 echo ========================================
 echo.
-call !PKG_MANAGER! run test
+call npm run test
 if errorlevel 1 (
     echo.
     echo WARNING: Some tests failed!
@@ -70,7 +62,7 @@ echo ========================================
 echo Running TypeScript type checking...
 echo ========================================
 echo.
-call !PKG_MANAGER! run check
+call npm run check
 if errorlevel 1 (
     echo.
     echo WARNING: TypeScript errors found!
@@ -89,7 +81,7 @@ echo ========================================
 echo Building application...
 echo ========================================
 echo.
-call !PKG_MANAGER! run build
+call npm run build
 if errorlevel 1 (
     echo.
     echo ERROR: Build failed!
@@ -112,15 +104,6 @@ if not exist dist (
 
 echo Build output verified successfully
 
-REM Display build statistics
-echo.
-echo ========================================
-echo Build Statistics
-echo ========================================
-echo.
-echo Build directory: dist
-echo.
-
 REM Create build info file
 echo.
 echo Creating build information file...
@@ -130,7 +113,7 @@ echo Creating build information file...
     echo.
     echo Build Date: %date% %time%
     echo.
-    echo Build Command: !PKG_MANAGER! run build
+    echo Build Command: npm run build
     echo.
     echo Output Directory: dist
     echo.

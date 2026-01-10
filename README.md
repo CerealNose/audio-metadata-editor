@@ -200,7 +200,7 @@ Double-click `install.bat` to:
 install.bat
 ```
 
-**Note:** The script will automatically detect and use pnpm if available, or fall back to npm if pnpm is not found. Both package managers are fully supported.
+**Note:** The scripts use npm (which comes with Node.js) for maximum compatibility. No additional package manager installation is required.
 
 #### 2. Start Development Server
 

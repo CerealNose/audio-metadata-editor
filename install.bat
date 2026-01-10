@@ -24,38 +24,13 @@ if errorlevel 1 (
 echo Node.js found: 
 node --version
 
-REM Try to use pnpm, fall back to npm if not available
-echo.
-echo Checking for pnpm...
-pnpm --version >nul 2>&1
-if errorlevel 1 (
-    echo pnpm not found in PATH
-    echo.
-    echo Attempting to install pnpm globally...
-    npm install -g pnpm
-    echo.
-    echo If pnpm installation failed, we will use npm instead.
-)
-
-REM Check again if pnpm is available
-pnpm --version >nul 2>&1
-if errorlevel 1 (
-    echo.
-    echo Using npm instead of pnpm
-    set "PKG_MANAGER=npm"
-) else (
-    echo pnpm found: 
-    pnpm --version
-    set "PKG_MANAGER=pnpm"
-)
-
-REM Install dependencies
+REM Install dependencies using npm
 echo.
 echo ========================================
-echo Installing dependencies using !PKG_MANAGER!...
+echo Installing dependencies...
 echo ========================================
 echo.
-call !PKG_MANAGER! install
+call npm install
 if errorlevel 1 (
     echo.
     echo ERROR: Failed to install dependencies
@@ -110,7 +85,7 @@ echo Setting up database...
 echo ========================================
 echo.
 echo Running database migrations...
-call !PKG_MANAGER! run db:push
+call npm run db:push
 if errorlevel 1 (
     echo.
     echo WARNING: Database setup may have failed
@@ -123,8 +98,6 @@ echo.
 echo ========================================
 echo Setup Complete!
 echo ========================================
-echo.
-echo Package Manager Used: !PKG_MANAGER!
 echo.
 echo Next steps:
 echo 1. Edit .env.local with your configuration
