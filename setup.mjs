@@ -14,18 +14,26 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const question = (query) => new Promise((resolve) => rl.question(query, resolve));
+const question = (query) => new Promise((resolve) => {
+  rl.question(query, (answer) => {
+    resolve(answer.trim());
+  });
+});
 
 async function checkMySQLConnection(host, user, password) {
   try {
     const connection = await mysql.createConnection({
-      host,
-      user,
-      password,
+      host: host || 'localhost',
+      user: user || 'root',
+      password: password || '',
+      waitForConnections: true,
+      connectionLimit: 1,
+      queueLimit: 0,
     });
     await connection.end();
     return true;
   } catch (error) {
+    console.error('Connection error:', error.message);
     return false;
   }
 }
@@ -33,9 +41,9 @@ async function checkMySQLConnection(host, user, password) {
 async function setupDatabase(host, user, password) {
   try {
     const connection = await mysql.createConnection({
-      host,
-      user,
-      password,
+      host: host || 'localhost',
+      user: user || 'root',
+      password: password || '',
     });
 
     // Create database
@@ -45,7 +53,7 @@ async function setupDatabase(host, user, password) {
     await connection.end();
     return true;
   } catch (error) {
-    console.error('✗ Failed to create database:', error.message);
+    console.error('✗ Database creation error:', error.message);
     return false;
   }
 }
@@ -100,22 +108,35 @@ async function main() {
     }
   }
 
-  console.log('\nMySQL Configuration:');
+  console.log('\n========================================');
+  console.log('MySQL Configuration');
+  console.log('========================================\n');
   console.log('Make sure MySQL is running on your system.\n');
 
-  const host = await question('MySQL Host (default: localhost): ') || 'localhost';
-  const user = await question('MySQL User (default: root): ') || 'root';
-  const password = await question('MySQL Password (default: root): ') || 'root';
+  const host = await question('MySQL Host (default: localhost): ');
+  const user = await question('MySQL User (default: root): ');
+  const password = await question('MySQL Password (default: root): ');
+
+  const finalHost = host || 'localhost';
+  const finalUser = user || 'root';
+  const finalPassword = password || 'root';
 
   console.log('\nConnecting to MySQL...');
-  const connected = await checkMySQLConnection(host, user, password);
+  console.log('Host: ' + finalHost);
+  console.log('User: ' + finalUser);
+
+  const connected = await checkMySQLConnection(finalHost, finalUser, finalPassword);
 
   if (!connected) {
     console.error('\n✗ Failed to connect to MySQL');
-    console.error('Please check:');
-    console.error('1. MySQL is running');
-    console.error('2. Host, user, and password are correct');
-    console.error('3. You can connect manually with: mysql -h ' + host + ' -u ' + user + ' -p');
+    console.error('\nPlease check:');
+    console.error('1. MySQL is running (start MySQL service)');
+    console.error('2. Host is correct: ' + finalHost);
+    console.error('3. User is correct: ' + finalUser);
+    console.error('4. Password is correct');
+    console.error('\nYou can test the connection manually with:');
+    console.error('  mysql -h ' + finalHost + ' -u ' + finalUser + ' -p');
+    console.error('\nThen run setup.bat again.\n');
     rl.close();
     process.exit(1);
   }
@@ -123,7 +144,7 @@ async function main() {
   console.log('✓ Connected to MySQL successfully\n');
 
   console.log('Creating database...');
-  const dbCreated = await setupDatabase(host, user, password);
+  const dbCreated = await setupDatabase(finalHost, finalUser, finalPassword);
 
   if (!dbCreated) {
     console.error('\n✗ Failed to create database');
@@ -132,16 +153,14 @@ async function main() {
   }
 
   console.log('\nCreating .env.local file...');
-  createEnvFile(host, user, password);
+  createEnvFile(finalHost, finalUser, finalPassword);
 
   console.log('\n========================================');
   console.log('Setup Complete!');
   console.log('========================================\n');
   console.log('Next steps:');
-  console.log('1. Run: npm install --legacy-peer-deps');
-  console.log('2. Run: npm run db:push');
-  console.log('3. Run: npm run dev');
-  console.log('\n');
+  console.log('1. Run: update.bat (to initialize the database)');
+  console.log('2. Run: run.bat (to start the development server)\n');
 
   rl.close();
 }
