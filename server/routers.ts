@@ -9,7 +9,23 @@ export const appRouter = router({
   system: systemRouter,
   audio: audioRouter,
   auth: router({
-    me: publicProcedure.query(opts => opts.ctx.user),
+    me: publicProcedure.query(opts => {
+      // Auto-login in development mode for local testing
+      if (process.env.NODE_ENV === 'development' && !opts.ctx.user) {
+        return {
+          id: 1,
+          openId: 'dev-user',
+          name: 'Developer',
+          email: 'dev@localhost',
+          loginMethod: 'local',
+          role: 'user',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastSignedIn: new Date(),
+        };
+      }
+      return opts.ctx.user;
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
