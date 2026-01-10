@@ -66,29 +66,52 @@ Before you begin, ensure you have the following installed on your PC:
 
 3. **Set Up Environment Variables**
 
-   Create a `.env.local` file in the project root with the following variables:
+   #### Creating the .env.local File
+
+   **On Windows (Command Prompt or PowerShell):**
+   ```cmd
+   REM Using Command Prompt
+   type nul > .env.local
+   
+   REM Or using PowerShell
+   New-Item -Path .env.local -ItemType File
+   ```
+
+   **On macOS/Linux:**
+   ```bash
+   touch .env.local
+   ```
+
+   Then open `.env.local` with your preferred text editor (VS Code, Notepad, Sublime Text, etc.) and add the following variables:
+
+   #### Full Configuration
 
    ```env
-   # Database
-   DATABASE_URL="mysql://username:password@localhost:3306/audio_metadata_editor"
+   # Database Configuration
+   # Format: mysql://username:password@host:port/database_name
+   # Example for local MySQL:
+   DATABASE_URL="mysql://root:password@localhost:3306/audio_metadata_editor"
 
-   # OAuth (Manus)
-   VITE_APP_ID="your_app_id"
+   # OAuth (Manus Authentication)
+   # Get these from your Manus dashboard
+   VITE_APP_ID="your_app_id_from_manus"
    OAUTH_SERVER_URL="https://api.manus.im"
    VITE_OAUTH_PORTAL_URL="https://portal.manus.im"
-   JWT_SECRET="your_jwt_secret_key"
+   JWT_SECRET="generate_a_random_secret_key_here"
 
-   # S3 Storage (AWS or compatible)
-   AWS_ACCESS_KEY_ID="your_access_key"
-   AWS_SECRET_ACCESS_KEY="your_secret_key"
+   # S3 Storage Configuration (AWS or compatible)
+   # Get these from your AWS console or S3 provider
+   AWS_ACCESS_KEY_ID="your_aws_access_key"
+   AWS_SECRET_ACCESS_KEY="your_aws_secret_key"
    AWS_REGION="us-east-1"
    AWS_S3_BUCKET="your-bucket-name"
 
    # Owner Information
+   # Your name and unique identifier
    OWNER_NAME="Your Name"
-   OWNER_OPEN_ID="your_open_id"
+   OWNER_OPEN_ID="your_unique_id"
 
-   # Built-in APIs
+   # Built-in APIs (Manus)
    BUILT_IN_FORGE_API_URL="https://api.manus.im"
    BUILT_IN_FORGE_API_KEY="your_api_key"
    VITE_FRONTEND_FORGE_API_URL="https://api.manus.im"
@@ -99,7 +122,48 @@ Before you begin, ensure you have the following installed on your PC:
    VITE_ANALYTICS_WEBSITE_ID="your_website_id"
    ```
 
-   **Note:** For local development without external services, you can use a local SQLite database or set up a local MySQL instance.
+   #### Quick Setup for Local Development
+
+   If you want to run locally without external services, use this minimal configuration:
+
+   ```env
+   # Minimal local setup
+   DATABASE_URL="mysql://root:root@localhost:3306/audio_metadata_editor"
+   JWT_SECRET="dev-secret-key-change-in-production"
+   VITE_APP_ID="dev-app-id"
+   OAUTH_SERVER_URL="https://api.manus.im"
+   VITE_OAUTH_PORTAL_URL="https://portal.manus.im"
+   OWNER_NAME="Developer"
+   OWNER_OPEN_ID="dev-user-id"
+   BUILT_IN_FORGE_API_URL="https://api.manus.im"
+   BUILT_IN_FORGE_API_KEY="dev-key"
+   VITE_FRONTEND_FORGE_API_URL="https://api.manus.im"
+   VITE_FRONTEND_FORGE_API_KEY="dev-frontend-key"
+   VITE_ANALYTICS_ENDPOINT="https://analytics.manus.im"
+   VITE_ANALYTICS_WEBSITE_ID="dev-website-id"
+   ```
+
+   #### Setting Up Your Database
+
+   Before running the app, create the database:
+
+   ```bash
+   # Connect to MySQL
+   mysql -u root -p
+
+   # In MySQL prompt, create the database
+   CREATE DATABASE audio_metadata_editor;
+   EXIT;
+   ```
+
+   Update your `DATABASE_URL` in `.env.local` to match your MySQL credentials.
+
+   #### Important Notes
+
+   - **Never commit `.env.local` to GitHub** - it contains sensitive credentials
+   - The `.gitignore` file should already exclude `.env.local`
+   - For production, use environment variables provided by your hosting platform
+   - Keep your AWS keys and API keys confidential
 
 4. **Set Up Database**
 
