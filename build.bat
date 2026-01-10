@@ -10,15 +10,6 @@ echo Audio Metadata Editor - Production Build
 echo ========================================
 echo.
 
-REM Check if pnpm is installed
-pnpm --version >nul 2>&1
-if errorlevel 1 (
-    echo ERROR: pnpm is not installed!
-    echo Please run install.bat first
-    pause
-    exit /b 1
-)
-
 REM Check if node_modules exists
 if not exist node_modules (
     echo ERROR: Dependencies not installed!
@@ -35,6 +26,14 @@ if not exist .env.local (
     exit /b 1
 )
 
+REM Determine package manager
+pnpm --version >nul 2>&1
+if errorlevel 1 (
+    set "PKG_MANAGER=npm"
+) else (
+    set "PKG_MANAGER=pnpm"
+)
+
 REM Clean previous builds
 echo.
 echo ========================================
@@ -45,10 +44,6 @@ if exist dist (
     echo Removing old dist folder...
     rmdir /s /q dist
 )
-if exist .pnpm-store (
-    echo Clearing pnpm cache...
-    rmdir /s /q .pnpm-store
-)
 
 REM Run tests before building
 echo.
@@ -56,7 +51,7 @@ echo ========================================
 echo Running tests...
 echo ========================================
 echo.
-call pnpm test
+call !PKG_MANAGER! run test
 if errorlevel 1 (
     echo.
     echo WARNING: Some tests failed!
@@ -75,7 +70,7 @@ echo ========================================
 echo Running TypeScript type checking...
 echo ========================================
 echo.
-call pnpm check
+call !PKG_MANAGER! run check
 if errorlevel 1 (
     echo.
     echo WARNING: TypeScript errors found!
@@ -94,7 +89,7 @@ echo ========================================
 echo Building application...
 echo ========================================
 echo.
-call pnpm build
+call !PKG_MANAGER! run build
 if errorlevel 1 (
     echo.
     echo ERROR: Build failed!
@@ -125,9 +120,6 @@ echo ========================================
 echo.
 echo Build directory: dist
 echo.
-echo Contents:
-dir /s dist 2>nul | find /c "File(s)"
-echo.
 
 REM Create build info file
 echo.
@@ -138,12 +130,12 @@ echo Creating build information file...
     echo.
     echo Build Date: %date% %time%
     echo.
-    echo Build Command: pnpm build
+    echo Build Command: !PKG_MANAGER! run build
     echo.
     echo Output Directory: dist
     echo.
     echo To start the production server:
-    echo   pnpm start
+    echo   start.bat
     echo.
     echo To deploy:
     echo   Copy the dist folder to your server

@@ -24,42 +24,38 @@ if errorlevel 1 (
 echo Node.js found: 
 node --version
 
-REM Check if pnpm is installed
+REM Try to use pnpm, fall back to npm if not available
 echo.
 echo Checking for pnpm...
 pnpm --version >nul 2>&1
 if errorlevel 1 (
+    echo pnpm not found in PATH
     echo.
-    echo WARNING: pnpm is not installed!
-    echo Installing pnpm globally...
+    echo Attempting to install pnpm globally...
+    npm install -g pnpm
     echo.
-    call npm install -g pnpm
-    if errorlevel 1 (
-        echo ERROR: Failed to install pnpm
-        pause
-        exit /b 1
-    )
-    echo.
-    echo pnpm installed successfully!
-    echo.
-    echo IMPORTANT: Please close this window and open a NEW Command Prompt window.
-    echo This allows Windows to refresh the PATH and find pnpm.
-    echo.
-    echo Then run: install.bat
-    echo.
-    pause
-    exit /b 0
+    echo If pnpm installation failed, we will use npm instead.
 )
-echo pnpm found: 
-pnpm --version
+
+REM Check again if pnpm is available
+pnpm --version >nul 2>&1
+if errorlevel 1 (
+    echo.
+    echo Using npm instead of pnpm
+    set "PKG_MANAGER=npm"
+) else (
+    echo pnpm found: 
+    pnpm --version
+    set "PKG_MANAGER=pnpm"
+)
 
 REM Install dependencies
 echo.
 echo ========================================
-echo Installing dependencies...
+echo Installing dependencies using !PKG_MANAGER!...
 echo ========================================
 echo.
-call pnpm install
+call !PKG_MANAGER! install
 if errorlevel 1 (
     echo.
     echo ERROR: Failed to install dependencies
@@ -114,7 +110,7 @@ echo Setting up database...
 echo ========================================
 echo.
 echo Running database migrations...
-call pnpm db:push
+call !PKG_MANAGER! run db:push
 if errorlevel 1 (
     echo.
     echo WARNING: Database setup may have failed
@@ -127,6 +123,8 @@ echo.
 echo ========================================
 echo Setup Complete!
 echo ========================================
+echo.
+echo Package Manager Used: !PKG_MANAGER!
 echo.
 echo Next steps:
 echo 1. Edit .env.local with your configuration

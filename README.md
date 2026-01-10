@@ -200,7 +200,7 @@ Double-click `install.bat` to:
 install.bat
 ```
 
-**Note:** If pnpm needs to be installed, the script will install it and ask you to open a NEW Command Prompt window. This allows Windows to refresh the PATH. Simply close the current window and open a new one, then run `install.bat` again.
+**Note:** The script will automatically detect and use pnpm if available, or fall back to npm if pnpm is not found. Both package managers are fully supported.
 
 #### 2. Start Development Server
 
