@@ -174,4 +174,37 @@
       max-width: 1280px; /* Standard content width */
     }
   }
+
+  /* Elegant custom components */
+  .card-elegant {
+    @apply bg-card text-card-foreground rounded-lg border border-border shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .input-elegant {
+    @apply w-full px-4 py-2 rounded-lg border border-border bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-background transition-all duration-200;
+  }
+
+  .label-elegant {
+    @apply block text-sm font-medium text-foreground mb-2;
+  }
+
+  .badge-elegant {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-background;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent to-blue-600 bg-clip-text text-transparent;
+  }
+
+  .divider-elegant {
+    @apply h-px bg-gradient-to-r from-transparent via-border to-transparent my-8;
+  }
 }

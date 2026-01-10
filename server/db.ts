@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, audioFiles, InsertAudioFile } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,52 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Audio file database helpers
+ */
+export async function createAudioFile(file: InsertAudioFile) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(audioFiles).values(file);
+  return result;
+}
+
+export async function getAudioFileById(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(audioFiles).where(eq(audioFiles.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserAudioFiles(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.select().from(audioFiles).where(eq(audioFiles.userId, userId)).orderBy(audioFiles.createdAt);
+  return result;
+}
+
+export async function updateAudioFileMetadata(id: number, metadata: Partial<InsertAudioFile>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const updateData: Record<string, unknown> = {};
+  Object.entries(metadata).forEach(([key, value]) => {
+    if (value !== undefined) updateData[key] = value;
+  });
+  
+  if (Object.keys(updateData).length > 0) {
+    await db.update(audioFiles).set(updateData).where(eq(audioFiles.id, id));
+  }
+}
+
+export async function deleteAudioFile(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  await db.delete(audioFiles).where(eq(audioFiles.id, id));
+}
+
+// TODO: add additional feature queries here as your schema grows.
