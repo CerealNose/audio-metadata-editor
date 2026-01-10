@@ -221,6 +221,29 @@ Double-click `update.bat` to:
 update.bat
 ```
 
+#### 4. Build for Production
+
+Double-click `build.bat` to create a production-ready build:
+- Runs all tests
+- Performs TypeScript type checking
+- Optimizes code and assets
+- Creates production bundle in dist folder
+
+```cmd
+build.bat
+```
+
+#### 5. Run Production Build
+
+Double-click `start.bat` to run the production server:
+- Starts the optimized production build
+- Runs on http://localhost:3000
+- Requires build.bat to be run first
+
+```cmd
+start.bat
+```
+
 ### macOS/Linux - Command Line
 
 ### Development Mode
@@ -240,13 +263,17 @@ This starts:
 pnpm build
 ```
 
-This creates optimized production builds in the `dist/` directory.
+Creates an optimized production build in the `dist/` directory.
 
 ### Run Production Build
+
+After building, run the production server with:
 
 ```bash
 pnpm start
 ```
+
+Runs the production build on http://localhost:3000
 
 ### Run Tests
 
