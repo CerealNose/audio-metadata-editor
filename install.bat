@@ -32,6 +32,7 @@ if errorlevel 1 (
     echo.
     echo WARNING: pnpm is not installed!
     echo Installing pnpm globally...
+    echo.
     call npm install -g pnpm
     if errorlevel 1 (
         echo ERROR: Failed to install pnpm
@@ -40,11 +41,14 @@ if errorlevel 1 (
     )
     echo.
     echo pnpm installed successfully!
-    echo Refreshing environment...
-    REM Refresh PATH by reading from registry
-    for /f "tokens=2*" %%A in ('reg query HKCU\Environment /v PATH 2^>nul') do set "USERPATH=%%B"
-    for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PATH 2^>nul') do set "SYSPATH=%%B"
-    set "PATH=!USERPATH!;!SYSPATH!;%PATH%"
+    echo.
+    echo IMPORTANT: Please close this window and open a NEW Command Prompt window.
+    echo This allows Windows to refresh the PATH and find pnpm.
+    echo.
+    echo Then run: install.bat
+    echo.
+    pause
+    exit /b 0
 )
 echo pnpm found: 
 pnpm --version

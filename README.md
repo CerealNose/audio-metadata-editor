@@ -200,6 +200,8 @@ Double-click `install.bat` to:
 install.bat
 ```
 
+**Note:** If pnpm needs to be installed, the script will install it and ask you to open a NEW Command Prompt window. This allows Windows to refresh the PATH. Simply close the current window and open a new one, then run `install.bat` again.
+
 #### 2. Start Development Server
 
 Double-click `run.bat` to start the development server:
