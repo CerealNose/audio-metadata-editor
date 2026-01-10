@@ -1,0 +1,327 @@
+# Audio Metadata Editor
+
+A elegant web application for editing audio file metadata (MP3/WAV) with support for single and batch editing, album artwork management, and audio preview playback.
+
+## Features
+
+### Core Functionality
+- **Upload Audio Files** - Drag-and-drop support for MP3 and WAV files
+- **Extract Metadata** - Automatically extract title, artist, album, year, genre, track number, composer, and comments
+- **Edit Metadata** - User-friendly form interface for editing all metadata fields
+- **Audio Preview** - Built-in player to preview audio with duration display
+- **Download Modified Files** - Download audio files with updated metadata
+- **File Management** - View, edit, and delete audio files
+
+### Advanced Features
+- **Batch Editing** - Update metadata for multiple files at once
+- **Album Artwork** - Upload, preview, and embed album artwork (JPEG, PNG, GIF, WebP)
+- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- **Elegant UI** - Modern interface with smooth transitions and intuitive controls
+
+## Tech Stack
+
+### Frontend
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- shadcn/ui components
+- Wouter for routing
+- tRPC for type-safe API calls
+
+### Backend
+- Express.js
+- tRPC 11
+- MySQL/TiDB database
+- Drizzle ORM
+- music-metadata for audio processing
+- AWS S3 for file storage
+
+### Testing
+- Vitest for unit tests
+- 35+ passing tests covering all core functionality
+
+## Local Setup
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed on your PC:
+
+- **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
+- **pnpm** (v10 or higher) - Install with: `npm install -g pnpm`
+- **Git** - [Download](https://git-scm.com/)
+- **MySQL** (v8 or higher) or compatible database - [Download](https://www.mysql.com/downloads/)
+
+### Installation Steps
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/CerealNose/audio-metadata-editor.git
+   cd audio-metadata-editor
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set Up Environment Variables**
+
+   Create a `.env.local` file in the project root with the following variables:
+
+   ```env
+   # Database
+   DATABASE_URL="mysql://username:password@localhost:3306/audio_metadata_editor"
+
+   # OAuth (Manus)
+   VITE_APP_ID="your_app_id"
+   OAUTH_SERVER_URL="https://api.manus.im"
+   VITE_OAUTH_PORTAL_URL="https://portal.manus.im"
+   JWT_SECRET="your_jwt_secret_key"
+
+   # S3 Storage (AWS or compatible)
+   AWS_ACCESS_KEY_ID="your_access_key"
+   AWS_SECRET_ACCESS_KEY="your_secret_key"
+   AWS_REGION="us-east-1"
+   AWS_S3_BUCKET="your-bucket-name"
+
+   # Owner Information
+   OWNER_NAME="Your Name"
+   OWNER_OPEN_ID="your_open_id"
+
+   # Built-in APIs
+   BUILT_IN_FORGE_API_URL="https://api.manus.im"
+   BUILT_IN_FORGE_API_KEY="your_api_key"
+   VITE_FRONTEND_FORGE_API_URL="https://api.manus.im"
+   VITE_FRONTEND_FORGE_API_KEY="your_frontend_key"
+
+   # Analytics
+   VITE_ANALYTICS_ENDPOINT="https://analytics.manus.im"
+   VITE_ANALYTICS_WEBSITE_ID="your_website_id"
+   ```
+
+   **Note:** For local development without external services, you can use a local SQLite database or set up a local MySQL instance.
+
+4. **Set Up Database**
+
+   ```bash
+   # Generate migrations and apply them
+   pnpm db:push
+   ```
+
+   This will create all necessary tables in your database.
+
+5. **Start Development Server**
+
+   ```bash
+   pnpm dev
+   ```
+
+   The application will be available at `http://localhost:3000`
+
+## Running Locally
+
+### Development Mode
+
+```bash
+pnpm dev
+```
+
+This starts:
+- Frontend development server (Vite) on port 3000
+- Backend Express server on port 3000
+- Hot module replacement for instant updates
+
+### Build for Production
+
+```bash
+pnpm build
+```
+
+This creates optimized production builds in the `dist/` directory.
+
+### Run Production Build
+
+```bash
+pnpm start
+```
+
+### Run Tests
+
+```bash
+pnpm test
+```
+
+Runs the test suite using Vitest. Currently includes 35+ tests covering:
+- Audio metadata extraction and validation
+- Image format validation
+- Authentication flows
+- Database operations
+
+## Project Structure
+
+```
+audio-metadata-editor/
+├── client/                 # Frontend React application
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Page components
+│   │   ├── lib/           # Utilities and helpers
+│   │   ├── types/         # TypeScript type definitions
+│   │   └── App.tsx        # Main app component
+│   └── index.html
+├── server/                # Backend Express server
+│   ├── _core/            # Core framework files
+│   ├── routers.ts        # tRPC route definitions
+│   ├── db.ts             # Database queries
+│   ├── audioRouter.ts    # Audio-specific routes
+│   ├── audioProcessor.ts # Audio processing utilities
+│   └── storage.ts        # S3 storage utilities
+├── drizzle/              # Database schema and migrations
+│   └── schema.ts         # Table definitions
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## Usage Guide
+
+### Uploading Audio Files
+
+1. Click "Upload File" or drag-and-drop MP3/WAV files into the upload zone
+2. Files are automatically scanned for existing metadata
+3. Uploaded files appear in the "Your Audio Files" list
+
+### Editing Single File Metadata
+
+1. Click the "Edit" button on any file
+2. Update metadata fields (title, artist, album, year, genre, etc.)
+3. Upload or update album artwork
+4. Click "Save Changes" to apply updates
+5. Download the modified file with updated metadata
+
+### Batch Editing
+
+1. Click "Edit All Files" to enter batch mode
+2. Select which files to update
+3. Enter metadata to apply to selected files
+4. Click "Update X File(s)" to apply changes
+
+### Managing Album Artwork
+
+1. In the file editor, scroll to the "Album Artwork" section
+2. Click to upload an image (JPEG, PNG, GIF, WebP)
+3. Preview the artwork before saving
+4. Click "Replace" to change artwork or "Remove" to delete it
+
+## API Endpoints
+
+### Audio Operations
+
+- `POST /api/trpc/audio.createFromUpload` - Upload and process audio file
+- `GET /api/trpc/audio.list` - List user's audio files
+- `GET /api/trpc/audio.getById` - Get specific audio file details
+- `POST /api/trpc/audio.updateMetadata` - Update single file metadata
+- `POST /api/trpc/audio.batchUpdateMetadata` - Update multiple files
+- `POST /api/trpc/audio.uploadArtwork` - Upload artwork for file
+- `GET /api/trpc/audio.getDownloadUrl` - Get download URL for file
+- `DELETE /api/trpc/audio.delete` - Delete audio file
+
+### Authentication
+
+- `GET /api/oauth/callback` - OAuth callback handler
+- `POST /api/trpc/auth.logout` - User logout
+
+## Troubleshooting
+
+### Database Connection Issues
+
+If you encounter database connection errors:
+
+1. Verify MySQL is running: `mysql -u root -p`
+2. Check DATABASE_URL format in `.env.local`
+3. Ensure database user has proper permissions
+4. Try creating the database manually: `CREATE DATABASE audio_metadata_editor;`
+
+### Port Already in Use
+
+If port 3000 is already in use:
+
+```bash
+# Find process using port 3000
+lsof -i :3000
+
+# Kill the process (replace PID with actual process ID)
+kill -9 <PID>
+```
+
+### Missing Dependencies
+
+If you encounter missing module errors:
+
+```bash
+pnpm install
+pnpm install --force
+```
+
+### Build Errors
+
+Clear cache and rebuild:
+
+```bash
+rm -rf node_modules .pnpm-store dist
+pnpm install
+pnpm build
+```
+
+## Development Workflow
+
+1. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make changes and test**
+   ```bash
+   pnpm test
+   pnpm dev
+   ```
+
+3. **Commit and push**
+   ```bash
+   git add .
+   git commit -m "Add your feature description"
+   git push origin feature/your-feature-name
+   ```
+
+4. **Create a Pull Request** on GitHub
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - feel free to use this project for personal or commercial purposes.
+
+## Support
+
+For issues, questions, or suggestions, please open an issue on the [GitHub repository](https://github.com/CerealNose/audio-metadata-editor/issues).
+
+## Roadmap
+
+- [ ] Batch artwork application
+- [ ] Automatic artwork detection from folder.jpg
+- [ ] Metadata export to CSV/JSON
+- [ ] Support for additional audio formats (FLAC, AAC)
+- [ ] Lyrics editing and management
+- [ ] Playlist creation and management
+- [ ] Dark mode theme
+- [ ] Mobile app (React Native)
+
+## Acknowledgments
+
+- Built with [React](https://react.dev/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- UI components from [shadcn/ui](https://ui.shadcn.com/)
+- Audio processing with [music-metadata](https://github.com/Borewit/music-metadata)
+- Database ORM by [Drizzle](https://orm.drizzle.team/)
