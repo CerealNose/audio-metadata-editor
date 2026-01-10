@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import ArtworkUpload from "./ArtworkUpload";
 
 interface AudioEditorProps {
   fileId: number;
@@ -28,6 +29,7 @@ export default function AudioEditor({ fileId, onClose, onComplete }: AudioEditor
 
   const [isSaving, setIsSaving] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [artwork, setArtwork] = useState<string | null>(null);
 
   const { data: file, isLoading } = trpc.audio.getById.useQuery({ id: fileId });
   const updateMutation = (trpc.audio.updateMetadata as any).useMutation();
@@ -46,6 +48,8 @@ export default function AudioEditor({ fileId, onClose, onComplete }: AudioEditor
         comment: file.comment || "",
         composer: file.composer || "",
       });
+      const artworkUrl = (file as any).artworkUrl;
+      setArtwork(artworkUrl || null);
     }
   }, [file]);
 
@@ -266,6 +270,21 @@ export default function AudioEditor({ fileId, onClose, onComplete }: AudioEditor
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="divider-elegant"></div>
+
+            {/* Artwork */}
+            <div>
+              <ArtworkUpload
+                fileId={fileId}
+                currentArtwork={artwork || undefined}
+                onUploadComplete={(url) => {
+                  setArtwork(url);
+                  toast.success("Artwork updated");
+                }}
+                onRemove={() => setArtwork(null)}
+              />
             </div>
 
             {/* Action Buttons */}

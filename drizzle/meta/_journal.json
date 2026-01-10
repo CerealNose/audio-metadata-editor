@@ -15,6 +15,13 @@
       "when": 1768078756221,
       "tag": "0001_classy_spitfire",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1768080198886,
+      "tag": "0002_careless_rocket_raccoon",
+      "breakpoints": true
     }
   ]
 }

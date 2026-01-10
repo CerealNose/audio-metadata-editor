@@ -48,6 +48,10 @@ export const audioFiles = mysqlTable("audioFiles", {
   totalTracks: int("totalTracks"),
   comment: text("comment"),
   composer: text("composer"),
+  // Artwork fields
+  artworkKey: varchar("artworkKey", { length: 255 }), // S3 key for artwork image
+  artworkUrl: text("artworkUrl"), // S3 URL for artwork image
+  artworkMimeType: varchar("artworkMimeType", { length: 50 }), // image/jpeg, image/png, etc.
   // Processing state
   isModified: int("isModified").default(0).notNull(),
   modifiedFileKey: varchar("modifiedFileKey", { length: 255 }), // S3 key for modified file

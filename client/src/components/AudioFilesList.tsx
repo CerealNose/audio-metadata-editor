@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useState } from "react";
+import ArtworkDisplay from "./ArtworkDisplay";
 
 interface AudioFilesListProps {
   files: any[];
@@ -66,14 +67,19 @@ export default function AudioFilesList({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-3">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-accent/10">
-                  <Music className="w-5 h-5 text-accent" />
-                </div>
+                <ArtworkDisplay
+                  artworkUrl={(file as any).artworkUrl}
+                  fileName={file.fileName}
+                  size="md"
+                />
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold truncate">{file.title || file.fileName}</h3>
                   <p className="text-sm text-muted-foreground truncate">
                     {file.artist || "Unknown Artist"}
                   </p>
+                  {(file as any).artworkUrl && (
+                    <p className="text-xs text-accent mt-1">Has artwork</p>
+                  )}
                 </div>
               </div>
 

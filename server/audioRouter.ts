@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { protectedProcedure, router } from './_core/trpc';
 import { createAudioFile, getAudioFileById, getUserAudioFiles, updateAudioFileMetadata, deleteAudioFile } from './db';
 import { storagePut, storageGet } from './storage';
-import { extractMetadata, validateAudioFormat, getMimeType, getAudioFormat } from './audioProcessor';
+import { extractMetadata, validateAudioFormat, getMimeType, getAudioFormat, validateImageFormat, getImageMimeType } from './audioProcessor';
 import { nanoid } from 'nanoid';
 
 
@@ -178,5 +178,36 @@ export const audioRouter = router({
       );
 
       return { success: true, updatedCount: input.fileIds.length };
+    }),
+
+  uploadArtwork: protectedProcedure
+    .input(z.object({
+      fileId: z.number(),
+      imageBuffer: z.instanceof(Buffer),
+      fileName: z.string(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const file = await getAudioFileById(input.fileId);
+      if (!file || file.userId !== ctx.user.id) {
+        throw new Error('File not found or access denied');
+      }
+
+      const mimeType = getImageMimeType(input.fileName);
+      if (!validateImageFormat(input.fileName, mimeType)) {
+        throw new Error('Invalid image format. Only JPEG, PNG, GIF, and WebP are supported.');
+      }
+
+      const ext = input.fileName.split('.').pop();
+      const artworkKey = `artwork/${ctx.user.id}/${input.fileId}/${nanoid()}.${ext}`;
+      const { url: artworkUrl } = await storagePut(artworkKey, input.imageBuffer, mimeType);
+
+      await updateAudioFileMetadata(input.fileId, {
+        artworkKey,
+        artworkUrl,
+        artworkMimeType: mimeType,
+        isModified: 1,
+      });
+
+      return { success: true, artworkUrl };
     }),
 });

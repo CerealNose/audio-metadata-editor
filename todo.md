@@ -34,3 +34,14 @@
 - [x] Cross-browser testing
 
 ## Completed Items
+
+
+## Album Artwork Feature
+- [x] Update database schema to store artwork metadata
+- [x] Create image upload and validation endpoint
+- [x] Implement artwork embedding in audio metadata
+- [x] Create artwork upload component with preview
+- [x] Add artwork display in file list
+- [x] Add artwork editing to single file editor
+- [ ] Add artwork support to batch editor
+- [x] Write tests for artwork functionality
