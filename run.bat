@@ -44,4 +44,4 @@ echo Press Ctrl+C to stop the server
 echo.
 
 REM Start the development server
-pnpm dev
+call pnpm dev

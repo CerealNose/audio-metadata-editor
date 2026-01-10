@@ -25,7 +25,7 @@ echo ========================================
 echo Updating dependencies...
 echo ========================================
 echo.
-pnpm install
+call pnpm install
 if errorlevel 1 (
     echo.
     echo ERROR: Failed to update dependencies
@@ -39,7 +39,7 @@ echo ========================================
 echo Updating database schema...
 echo ========================================
 echo.
-pnpm db:push
+call pnpm db:push
 if errorlevel 1 (
     echo.
     echo WARNING: Database update may have failed
@@ -53,7 +53,7 @@ echo ========================================
 echo Running tests...
 echo ========================================
 echo.
-pnpm test
+call pnpm test
 if errorlevel 1 (
     echo.
     echo WARNING: Some tests failed

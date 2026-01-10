@@ -32,12 +32,19 @@ if errorlevel 1 (
     echo.
     echo WARNING: pnpm is not installed!
     echo Installing pnpm globally...
-    npm install -g pnpm
+    call npm install -g pnpm
     if errorlevel 1 (
         echo ERROR: Failed to install pnpm
         pause
         exit /b 1
     )
+    echo.
+    echo pnpm installed successfully!
+    echo Refreshing environment...
+    REM Refresh PATH by reading from registry
+    for /f "tokens=2*" %%A in ('reg query HKCU\Environment /v PATH 2^>nul') do set "USERPATH=%%B"
+    for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PATH 2^>nul') do set "SYSPATH=%%B"
+    set "PATH=!USERPATH!;!SYSPATH!;%PATH%"
 )
 echo pnpm found: 
 pnpm --version
@@ -48,7 +55,7 @@ echo ========================================
 echo Installing dependencies...
 echo ========================================
 echo.
-pnpm install
+call pnpm install
 if errorlevel 1 (
     echo.
     echo ERROR: Failed to install dependencies
@@ -103,7 +110,7 @@ echo Setting up database...
 echo ========================================
 echo.
 echo Running database migrations...
-pnpm db:push
+call pnpm db:push
 if errorlevel 1 (
     echo.
     echo WARNING: Database setup may have failed

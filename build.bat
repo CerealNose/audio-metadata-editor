@@ -56,7 +56,7 @@ echo ========================================
 echo Running tests...
 echo ========================================
 echo.
-pnpm test
+call pnpm test
 if errorlevel 1 (
     echo.
     echo WARNING: Some tests failed!
@@ -75,7 +75,7 @@ echo ========================================
 echo Running TypeScript type checking...
 echo ========================================
 echo.
-pnpm check
+call pnpm check
 if errorlevel 1 (
     echo.
     echo WARNING: TypeScript errors found!
@@ -94,7 +94,7 @@ echo ========================================
 echo Building application...
 echo ========================================
 echo.
-pnpm build
+call pnpm build
 if errorlevel 1 (
     echo.
     echo ERROR: Build failed!
@@ -126,7 +126,7 @@ echo.
 echo Build directory: dist
 echo.
 echo Contents:
-dir /s dist | find /c "File(s)"
+dir /s dist 2>nul | find /c "File(s)"
 echo.
 
 REM Create build info file
@@ -161,7 +161,7 @@ echo.
 echo Production build ready in: dist\
 echo.
 echo Next steps:
-echo 1. Test the build locally: pnpm start
+echo 1. Test the build locally: start.bat
 echo 2. Deploy to your server
 echo 3. Set environment variables on the server
 echo 4. Start with: node dist/index.js
