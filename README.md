@@ -182,7 +182,46 @@ Before you begin, ensure you have the following installed on your PC:
 
    The application will be available at `http://localhost:3000`
 
-## Running Locally
+### Running Locally
+
+### Windows Users - Quick Start
+
+For Windows users, we've provided convenient batch scripts to automate the setup and running process:
+
+#### 1. First Time Setup
+
+Double-click `install.bat` to:
+- Check for Node.js and pnpm
+- Install all dependencies
+- Create `.env.local` with default values
+- Set up the database
+
+```cmd
+install.bat
+```
+
+#### 2. Start Development Server
+
+Double-click `run.bat` to start the development server:
+
+```cmd
+run.bat
+```
+
+The application will be available at `http://localhost:3000`
+
+#### 3. Update Dependencies and Database
+
+Double-click `update.bat` to:
+- Update all dependencies
+- Apply database migrations
+- Run tests
+
+```cmd
+update.bat
+```
+
+### macOS/Linux - Command Line
 
 ### Development Mode
 
